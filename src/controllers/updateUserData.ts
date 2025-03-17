@@ -1,14 +1,22 @@
 import { Request, Response } from 'express';
 import { db } from '../config';
 import { doc, updateDoc } from 'firebase/firestore';
+import { User } from '../types/user';
 
 export const updateUserData = async (req: Request, res: Response) => {
   try {
     const userId = req.params.id;
-    const userData = req.body;
-    await updateDoc(doc(db, 'USERS', userId), userData);
-    res.status(200).send('User data updated successfully');
+    const userData: Partial<User> = {
+      ...req.body,
+      updatedAt: new Date()
+    };
+
+    const userRef = doc(db, 'USERS', userId);
+    await updateDoc(userRef, userData);
+    
+    res.status(200).json({ message: 'User updated successfully' });
   } catch (error) {
-    res.status(500).send('Error updating user data');
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'Failed to update user' });
   }
 };

@@ -1,13 +1,12 @@
-import { Router, Express } from 'express';
+import { Router } from 'express';
 import { fetchUserData } from '../controllers/fetchUserData';
 import { updateUserData } from '../controllers/updateUserData';
 import { authMiddleware } from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.get('/user/:id', authMiddleware, fetchUserData);
-router.put('/user/:id', authMiddleware, updateUserData);
+// Both endpoints are protected by authMiddleware
+router.get('/users/:id', authMiddleware, fetchUserData);
+router.put('/users/:id', authMiddleware, updateUserData);
 
-export const setUserRoutes = (app: Express) => {
-    app.use('/api', router);
-};
+export default router;
